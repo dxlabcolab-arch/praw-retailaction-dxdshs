@@ -1,0 +1,3 @@
+**/__pycache__
+weights/expected_*.csv
+sample_submission.csv
