@@ -11,16 +11,15 @@ cd "$(dirname "$0")"
 PRESET=${1:-ens6_vitl}; ROOT=${2:-/data}; OUT=${3:-/output/submission.csv}
 W=weights; mkdir -p "$(dirname "$OUT")"; TMP=$(mktemp -d)
 case $PRESET in
-  ens6_vitl)   REF=$W/refiner_vjepa21l_regfull_s1.pt,$W/refiner_vjepa21l_regfull_s2.pt,$W/refiner_vjepa21l_regfull_s3.pt,$W/refiner_vjepa21l_regfull_s7.pt,$W/refiner_vjepa21l_regfull_s4.pt,$W/refiner_vjepa21l_regfull_s5.pt
-               EXPECTED=$W/expected_lb0.9762_6seeds.csv ;;
-  ens4_vitl)   REF=$W/refiner_vjepa21l_regfull_s1.pt,$W/refiner_vjepa21l_regfull_s2.pt,$W/refiner_vjepa21l_regfull_s3.pt,$W/refiner_vjepa21l_regfull_s7.pt
-               EXPECTED=$W/expected_lb0.9762_4seeds.csv ;;
-  single_vitl) REF=$W/refiner_vjepa21l_regfull_s1.pt; EXPECTED=$W/expected_lb0.9756_s1.csv ;;
+  ens6_vitl)   REF=$W/refiner_1.pt,$W/refiner_2.pt,$W/refiner_3.pt,$W/refiner_6.pt,$W/refiner_4.pt,$W/refiner_5.pt ;;
+  ens4_vitl)   REF=$W/refiner_1.pt,$W/refiner_2.pt,$W/refiner_3.pt,$W/refiner_6.pt ;;
+  single_vitl) REF=$W/refiner_1.pt ;;
   *) echo "unknown preset $PRESET"; exit 1 ;;
 esac
+EXPECTED=$W/expected_$PRESET.csv
 echo "[1/4] stage 1: four V-JEPA 2 + FACT-DETR models (ViT-L all data, ViT-g all data, 2x ViT-L train split), 10 predictions per clip each"
 i=0; C=""
-for ck in stage1_vjepa2_vitl_full stage1_vjepa2_vitg_full stage1_vjepa2_vitl_trainonly_e20 stage1_vjepa2_vitl_trainonly_lrbb2e5; do
+for ck in stage1_1 stage1_2 stage1_3 stage1_4; do      # ViT-L all data, ViT-g all data, ViT-L train split (20 ep), ViT-L train split (backbone lr 2e-5)
   python src/cache_preds.py --ckpt $W/$ck.pt --root "$ROOT" --split test --out $TMP/s1_$i.pkl; C="$C $TMP/s1_$i.pkl"; i=$((i+1))
 done
 echo "[2/4] temporal weighted fusion of the four stage-1 outputs (tIoU >= 0.5)"

@@ -53,7 +53,18 @@ bash run.sh ens4_vitl /path/to/challenge ./submission.csv       # /path/to/chall
 ## Weights
 `weights/` is downloaded at build time from our Hugging Face model repo (see `download_weights.sh`, md5 list in
 `weights/MD5SUMS`, HF repo `juuuncha/praw-retailaction-dxdshs-weights`): 4 stage-1 checkpoints (V-JEPA 2 ViT-L ×3, ViT-g ×1; 1.35–4.2 GB each) and 6 refiner checkpoints
-(V-JEPA 2.1 ViT-L, 1.4 GB each). Public initialisations are fetched from their original repos at pinned revisions:
+(V-JEPA 2.1 ViT-L, 1.4 GB each).
+
+| file | model |
+|---|---|
+| `stage1_1.pt` | stage 1, V-JEPA 2 ViT-L + FACT-DETR, all labelled data |
+| `stage1_2.pt` | stage 1, V-JEPA 2 ViT-g + FACT-DETR, all labelled data |
+| `stage1_3.pt` | stage 1, V-JEPA 2 ViT-L, train split, 20 epochs |
+| `stage1_4.pt` | stage 1, V-JEPA 2 ViT-L, train split, backbone lr 2e-5 |
+| `refiner_1.pt` … `refiner_6.pt` | stage 2 point refiner, V-JEPA 2.1 ViT-L, all labelled data, six random seeds (`ens6_vitl` = all six, `single_vitl` = `refiner_1.pt`, `ens4_vitl` = 1, 2, 3, 6) |
+| `expected_<preset>.csv` | the submitted prediction file of each preset (used by `VERIFY=1`) |
+
+Public initialisations are fetched from their original repos at pinned revisions:
 `facebook/vjepa2-vitl-fpc64-256`, `facebook/vjepa2-vitg-fpc64-256` (V-JEPA 2, MIT), `apiantonio/vjepa2.1-vit-large-384`
 (HF port of Meta's V-JEPA 2.1 ViT-L; the remote code is pinned by revision), `usyd-community/vitpose-plus-base` (ViTPose++,
 Apache-2.0; only its config is used to build the refiner head).
