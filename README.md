@@ -40,14 +40,14 @@ docker run --rm --gpus all --shm-size=16g -v .../data:/data/test:ro -v $(pwd)/ou
 docker run --rm --gpus all --shm-size=16g -e VERIFY=1 -v .../data:/data/test:ro -v $(pwd)/output:/output praw-dxdshs
 ```
 Runtime on one RTX PRO 6000 (96 GB) for the 2,500 test clips: stage 1 ≈ 30 min, refiners ≈ 16 min each
-(`ens6_vitl` ≈ 1 h 45 min, total ≈ 2 h 15 min; `single_vitl` ≈ 1 h).
+(`ens6_vitl` ≈ 2 h in total, measured 1 h 50 min – 2 h 10 min end to end; `single_vitl` ≈ 50 min).
 
 ## Without Docker
 ```bash
 pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cu128
 pip install -r requirements.txt
 python prefetch_pretrained.py && bash download_weights.sh
-bash run.sh ens4_vitl /path/to/challenge ./submission.csv       # /path/to/challenge contains test/<id>/...
+bash run.sh ens6_vitl /path/to/challenge ./submission.csv       # /path/to/challenge contains test/<id>/...; presets as above
 ```
 
 ## Weights
