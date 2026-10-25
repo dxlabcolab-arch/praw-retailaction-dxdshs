@@ -1,17 +1,17 @@
 # DX_DSHS — PRAW RetailAction Challenge: method
 
 Final submissions: `ens6_vitl` (public LB 0.9762) and `single_vitl` (public LB 0.9756); see README.
-Task: two synchronised ceiling cameras (rank0, rank1), ≤ 32 frames at 6 fps, 600×600, plus the shopper's 2D pose per frame
+Task: two synchronised ceiling cameras (rank0, rank1), ≤ 32 frames (non-uniform frame rate), 600×600, plus the shopper's 2D pose per frame
 (13 joints: x, y, confidence). For every shopper–product interaction, predict start/end time (normalised to [0, 1]),
 the contact point (x, y) in **each** camera, and a confidence score.
 
 The pipeline has four steps. Only steps 1 and 3 are neural networks.
 
 ```
- rank0 video ─┐                                                                         ┌─ refiner A: ViTPose++-B (image) ─┐
- rank1 video ─┼─► STAGE 1 ×4 models ─► 4 × 10 predictions ─► TEMPORAL WBF ─► 10 preds ─┤                                  ├─ mean ─► SOFT-NMS ─► CSV
- poses ───────┘   (V-JEPA 2 + FACT-DETR)                     (fuse the 4)    (top 3)   └─ refiner B: V-JEPA 2.1-B (video) ┘  points   (scores)
-                  detection + time + coarse point                                         ±1 m crop → precise point          ×2 passes
+ rank0 video ─┐
+ rank1 video ─┼─► STAGE 1 ×4 models ─► 4 × 10 predictions ─► TEMPORAL WBF ─► 10 preds ─► STAGE 2: 6 × V-JEPA 2.1 ViT-L refiners ─► SOFT-NMS ─► CSV
+ poses ───────┘   (V-JEPA 2 + FACT-DETR)                     (fuse the 4)    (top 3)     (video, ±1 m crop, ×2 passes, points averaged)   (scores)
+                  detection + time + coarse point
 ```
 
 ## 1. Stage 1 — detection, timing and a coarse point (`src/model_fact.py`, `src/model.py`, `src/backbone_hf.py`)
