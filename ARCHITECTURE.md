@@ -46,10 +46,10 @@ Decoder (**FACT**, CVPR 2024 "Frame-Action Cross-attention Temporal modeling"):
 
 | model | backbone | trained on |
 |---|---|---|
-| A | V-JEPA 2 ViT-L | train + val + HF test (all labelled data) |
-| B | V-JEPA 2 ViT-g | all labelled data |
-| C | V-JEPA 2 ViT-L, 20 epochs | train |
-| D | V-JEPA 2 ViT-L, backbone lr 2e-5 | train |
+| A (`stage1_1.pt`) | V-JEPA 2 ViT-L | train + val + HF test (all labelled data) |
+| B (`stage1_2.pt`) | V-JEPA 2 ViT-g | all labelled data |
+| C (`stage1_3.pt`) | V-JEPA 2 ViT-L, 20 epochs | train |
+| D (`stage1_4.pt`) | V-JEPA 2 ViT-L, backbone lr 2e-5 | train |
 
 ## 2. Temporal Weighted Box Fusion (`src/stage1_wbf.py`)
 
