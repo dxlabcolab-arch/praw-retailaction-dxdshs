@@ -70,6 +70,13 @@ Apache-2.0; only its config is used to build the refiner head).
 `VERIFY=1` compares the produced CSV with the submitted one. On our hardware (NVIDIA Blackwell, torch 2.11.0 + CUDA 12.8)
 the output is byte-identical. On other GPUs or library versions the last digits of the bf16 outputs can differ; the score
 difference is negligible. The pipeline is deterministic (no sampling, fixed checkpoints, fixed fusion rules).
+Note that a row-by-row comparison of two CSVs is misleading in that case: after soft-NMS most of the ten candidates of a
+clip have near-zero, near-tied confidences, so a tiny numerical change can swap the order of two of them, which looks like
+a large coordinate difference although the set of predictions is the same. Compare by content instead:
+```bash
+python tools/compare_submissions.py output/submission.csv weights/expected_ens6_vitl.csv
+```
+It matches the candidates of each clip by (start, end, points) and reports the largest remaining difference.
 
 ## Files
 ```
