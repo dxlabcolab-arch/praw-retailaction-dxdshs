@@ -1,6 +1,8 @@
 8b41e4a15cb313da6995a4b8058b8907  refiner_vjepa21l_regfull_s1.pt
 09395de9cd3190bc80fa6a2e70ea8b58  refiner_vjepa21l_regfull_s2.pt
 43a07d293a374aab2ec8a9e321105c9f  refiner_vjepa21l_regfull_s3.pt
+0aac00929cbf554e568f403e7fecd656  refiner_vjepa21l_regfull_s4.pt
+1912999dbfe5298a449e3adf0b02664f  refiner_vjepa21l_regfull_s5.pt
 12bb29c2eb523e17f255fdfdcaf3ef41  refiner_vjepa21l_regfull_s7.pt
 c75b08098dbc89ce42e5ca2ba72f5075  stage1_vjepa2_vitg_full.pt
 f175a22b20ab62e653a2eb0302e586f4  stage1_vjepa2_vitl_full.pt
@@ -8,3 +10,4 @@ f175a22b20ab62e653a2eb0302e586f4  stage1_vjepa2_vitl_full.pt
 fb3e98bf074a50e2ee62828121a89f3b  stage1_vjepa2_vitl_trainonly_lrbb2e5.pt
 250003c08da1912467c9a33bf20c13f5  expected_lb0.9756_s1.csv
 c9ce9d04f290ebac39f81d971f17a6ac  expected_lb0.9762_4seeds.csv
+6b1254a7c16860a64e5dcccacfae6aa2  expected_lb0.9762_6seeds.csv

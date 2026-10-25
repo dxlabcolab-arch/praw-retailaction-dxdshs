@@ -13,4 +13,4 @@ RUN bash download_weights.sh
 COPY run.sh .
 ENV HF_HUB_OFFLINE=1
 ENTRYPOINT ["bash", "/app/run.sh"]
-CMD ["ens4_vitl", "/data", "/output/submission.csv"]
+CMD ["ens6_vitl", "/data", "/output/submission.csv"]

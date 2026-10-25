@@ -1,6 +1,6 @@
 # DX_DSHS — PRAW RetailAction Challenge: method
 
-Final submissions: `ens4_vitl` (public LB 0.9762) and `single_vitl` (public LB 0.9756); see README.
+Final submissions: `ens6_vitl` (public LB 0.9762) and `single_vitl` (public LB 0.9756); see README.
 Task: two synchronised ceiling cameras (rank0, rank1), ≤ 32 frames at 6 fps, 600×600, plus the shopper's 2D pose per frame
 (13 joints: x, y, confidence). For every shopper–product interaction, predict start/end time (normalised to [0, 1]),
 the contact point (x, y) in **each** camera, and a confidence score.
@@ -83,7 +83,7 @@ Training: windows centred on the ground-truth point plus noise drawn from stage 
 loss = distance in metres (pose-based pixel→metre factor) + 0.05 × heatmap cross-entropy; horizontal flip, 90° rotations and
 colour jitter; EMA of the weights (0.999); AdamW (backbone lr 5e-5, rest 2e-4), batch 16, 20 epochs (one seed 30),
 on **all labelled data** (train + validation + HF test); the last epoch is used.
-`ens4_vitl` averages four such refiners that differ only in the random seed; `single_vitl` uses the first one.
+`ens6_vitl` averages six such refiners that differ only in the random seed (two were trained on a second server with the same recipe); `single_vitl` uses the first one.
 
 ## 4. Temporal soft-NMS (`src/softnms_csv.py`)
 
@@ -104,4 +104,5 @@ time and points but its score is multiplied by 0.01. Ten predictions per clip ar
 | 4-model temporal WBF in stage 1 | 0.9682–0.9685 |
 | V-JEPA 2.1 ViT-B video refiner (replaces ViTPose++) | 0.9723 |
 | V-JEPA 2.1 ViT-L refiner, regularised, all labelled data (`single_vitl`) | 0.9756 |
-| **mean of 4 seeds of that refiner (`ens4_vitl`)** | **0.9762** |
+| mean of 4 seeds of that refiner (`ens4_vitl`) | 0.9762 |
+| **mean of 6 seeds (`ens6_vitl`, final)** | **0.9762** |

@@ -5,11 +5,12 @@ Training code is not included (not required). Method description: [ARCHITECTURE.
 
 | preset | what | public LB |
 |---|---|---|
-| `ens4_vitl` (default) | 4 stage-1 models + temporal fusion → 4 V-JEPA 2.1 ViT-L refiners (seeds) averaged → soft-NMS | **0.9762** |
-| `single_vitl` | same, with one refiner (seed 1) | 0.9756 |
+| `ens6_vitl` (default) — **final submission 1** | 4 stage-1 models + temporal fusion → 6 V-JEPA 2.1 ViT-L refiners (seeds) averaged → soft-NMS | **0.9762** |
+| `single_vitl` — **final submission 2** | same, with one refiner (seed 1) | 0.9756 |
+| `ens4_vitl` | earlier 4-seed version of the ensemble | 0.9762 |
 
 ## Requirements
-- Linux, NVIDIA GPU with **≥ 48 GB** memory (inference of the 4-refiner preset peaks around 35 GB), NVIDIA driver ≥ 570 (CUDA 12.8)
+- Linux, NVIDIA GPU with **≥ 48 GB** memory (inference of the 6-refiner preset peaks around 40 GB), NVIDIA driver ≥ 570 (CUDA 12.8)
 - Docker with the NVIDIA Container Toolkit (`docker run --gpus all` must work)
 - ~60 GB free disk (image ≈ 30 GB incl. weights), internet access **at build time** (weights + public initialisations are
   downloaded into the image; the container itself runs offline)
@@ -27,19 +28,19 @@ With the Kaggle download the clip folders are in `vam-dataset-challenge_test_no_
 ## Run (single command)
 ```bash
 git clone https://github.com/dxlabcolab-arch/praw-retailaction-dxdshs.git && cd praw-retailaction-dxdshs
-docker build -t praw-dxdshs .        # ~30-40 min: pip, public initialisations, ~13 GB of our weights (md5-checked)
+docker build -t praw-dxdshs .        # ~30-40 min: pip, public initialisations, ~16 GB of our weights (md5-checked)
 docker run --rm --gpus all --shm-size=16g \
   -v /path/to/vam-dataset-challenge_test_no_labels/data:/data/test:ro \
   -v $(pwd)/output:/output praw-dxdshs
-# -> output/submission.csv   (preset ens4_vitl, our public-LB 0.9762 file)
+# -> output/submission.csv   (preset ens6_vitl = final submission 1)
 
 # the other submitted file:
 docker run --rm --gpus all --shm-size=16g -v .../data:/data/test:ro -v $(pwd)/output:/output praw-dxdshs single_vitl /data /output/submission_single.csv
 # compare with the submitted file (md5) at the end of the run:
 docker run --rm --gpus all --shm-size=16g -e VERIFY=1 -v .../data:/data/test:ro -v $(pwd)/output:/output praw-dxdshs
 ```
-Runtime on one RTX PRO 6000 (96 GB) for the 2,500 test clips: stage 1 ≈ 30 min, refiners ≈ 16 min each (`ens4_vitl` ≈ 65 min),
-total ≈ 1 h 40 min; `single_vitl` ≈ 1 h.
+Runtime on one RTX PRO 6000 (96 GB) for the 2,500 test clips: stage 1 ≈ 30 min, refiners ≈ 16 min each
+(`ens6_vitl` ≈ 1 h 45 min, total ≈ 2 h 15 min; `single_vitl` ≈ 1 h).
 
 ## Without Docker
 ```bash
@@ -51,7 +52,7 @@ bash run.sh ens4_vitl /path/to/challenge ./submission.csv       # /path/to/chall
 
 ## Weights
 `weights/` is downloaded at build time from our Hugging Face model repo (see `download_weights.sh`, md5 list in
-`weights/MD5SUMS`): 4 stage-1 checkpoints (V-JEPA 2 ViT-L ×3, ViT-g ×1; 1.35–4.2 GB each) and 4 refiner checkpoints
+`weights/MD5SUMS`, HF repo `juuuncha/praw-retailaction-dxdshs-weights`): 4 stage-1 checkpoints (V-JEPA 2 ViT-L ×3, ViT-g ×1; 1.35–4.2 GB each) and 6 refiner checkpoints
 (V-JEPA 2.1 ViT-L, 1.4 GB each). Public initialisations are fetched from their original repos at pinned revisions:
 `facebook/vjepa2-vitl-fpc64-256`, `facebook/vjepa2-vitg-fpc64-256` (V-JEPA 2, MIT), `apiantonio/vjepa2.1-vit-large-384`
 (HF port of Meta's V-JEPA 2.1 ViT-L; the remote code is pinned by revision), `usyd-community/vitpose-plus-base` (ViTPose++,

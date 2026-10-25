@@ -1,15 +1,18 @@
 #!/bin/bash
 # Single entry point: challenge test videos -> submission CSV.
 # usage: bash run.sh [PRESET] [DATA_ROOT] [OUT_CSV]
-#   PRESET     ens4_vitl (default; public LB 0.9762)  |  single_vitl (public LB 0.9756)
+#   PRESET     ens6_vitl (default; public LB 0.9762, final submission 1)  |  single_vitl (public LB 0.9756, final submission 2)
+#              ens4_vitl (public LB 0.9762, earlier 4-seed version)
 #   DATA_ROOT  folder containing test/<id>/{rank0_video.mp4,rank1_video.mp4,metadata.json}   (default /data)
 #   OUT_CSV    default /output/submission.csv
 # Optional: VERIFY=1 compares the result with the submitted file (weights/expected_<preset>.csv) by md5.
 set -e
 cd "$(dirname "$0")"
-PRESET=${1:-ens4_vitl}; ROOT=${2:-/data}; OUT=${3:-/output/submission.csv}
+PRESET=${1:-ens6_vitl}; ROOT=${2:-/data}; OUT=${3:-/output/submission.csv}
 W=weights; mkdir -p "$(dirname "$OUT")"; TMP=$(mktemp -d)
 case $PRESET in
+  ens6_vitl)   REF=$W/refiner_vjepa21l_regfull_s1.pt,$W/refiner_vjepa21l_regfull_s2.pt,$W/refiner_vjepa21l_regfull_s3.pt,$W/refiner_vjepa21l_regfull_s7.pt,$W/refiner_vjepa21l_regfull_s4.pt,$W/refiner_vjepa21l_regfull_s5.pt
+               EXPECTED=$W/expected_lb0.9762_6seeds.csv ;;
   ens4_vitl)   REF=$W/refiner_vjepa21l_regfull_s1.pt,$W/refiner_vjepa21l_regfull_s2.pt,$W/refiner_vjepa21l_regfull_s3.pt,$W/refiner_vjepa21l_regfull_s7.pt
                EXPECTED=$W/expected_lb0.9762_4seeds.csv ;;
   single_vitl) REF=$W/refiner_vjepa21l_regfull_s1.pt; EXPECTED=$W/expected_lb0.9756_s1.csv ;;
