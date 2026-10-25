@@ -5,7 +5,9 @@ import sys, json, numpy as np, pandas as pd
 from scipy.optimize import linear_sum_assignment
 A = pd.read_csv(sys.argv[1]).set_index("id"); B = pd.read_csv(sys.argv[2]).set_index("id")
 A.index = A.index.astype(int); B.index = B.index.astype(int)
-assert set(A.index) == set(B.index), f"different clip ids ({len(A)} vs {len(B)})"
+ids = sorted(set(A.index) & set(B.index)); assert ids, "no common clip ids"
+if len(ids) < max(len(A), len(B)): print(f"comparing the {len(ids)} clips present in both files ({len(A)} vs {len(B)})")
+A, B = A.loc[ids], B.loc[ids]
 def vec(p):
     acts = json.loads(p)["actions"]
     return np.array([[a["start"], a["end"]] + [a["spatial"]["action_cam"][v][k] for v in ("rank0", "rank1") for k in ("x", "y")] for a in acts]), np.array([a["confidence"] if "confidence" in a else a.get("score", 0) for a in acts])
