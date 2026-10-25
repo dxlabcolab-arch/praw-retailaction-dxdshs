@@ -74,7 +74,8 @@ Note that a row-by-row comparison of two CSVs is misleading in that case: after 
 clip have near-zero, near-tied confidences, so a tiny numerical change can swap the order of two of them, which looks like
 a large coordinate difference although the set of predictions is the same. Compare by content instead:
 ```bash
-python tools/compare_submissions.py output/submission.csv weights/expected_ens6_vitl.csv
+curl -LO https://huggingface.co/juuuncha/praw-retailaction-dxdshs-weights/resolve/main/expected_ens6_vitl.csv
+python tools/compare_submissions.py output/submission.csv expected_ens6_vitl.csv      # needs pandas, numpy, scipy
 ```
 It matches the candidates of each clip by (start, end, points) and reports the largest remaining difference.
 
