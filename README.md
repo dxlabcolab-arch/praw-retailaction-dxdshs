@@ -57,14 +57,9 @@ bash run.sh ens4_vitl /path/to/challenge ./submission.csv       # /path/to/chall
 
 | file | model |
 |---|---|
-| `stage1_1.pt` | stage 1, V-JEPA 2 ViT-L backbone + FACT-DETR head, trained on all labelled data |
-| `stage1_2.pt` | stage 1, V-JEPA 2 ViT-g backbone + FACT-DETR head, trained on all labelled data |
-| `stage1_3.pt` | stage 1, V-JEPA 2 ViT-L backbone + FACT-DETR head, trained on the train split only (20 epochs) |
-| `stage1_4.pt` | stage 1, V-JEPA 2 ViT-L backbone + FACT-DETR head, trained on the train split only (backbone lr 2e-5) |
+| `stage1_1.pt` … `stage1_4.pt` | stage 1 (V-JEPA 2 backbone + FACT-DETR head), same architecture, four training variants: 1 = ViT-L, all labelled data; 2 = ViT-g, all labelled data; 3 = ViT-L, train split, 20 epochs; 4 = ViT-L, train split, backbone lr 2e-5 |
 | `refiner_1.pt` … `refiner_6.pt` | stage 2 point refiner, V-JEPA 2.1 ViT-L, all labelled data, six random seeds (`ens6_vitl` = all six, `single_vitl` = `refiner_1.pt`, `ens4_vitl` = 1, 2, 3, 6) |
 | `expected_<preset>.csv` | the submitted prediction file of each preset (used by `VERIFY=1`) |
-
-All four stage-1 checkpoints share the same architecture (pose encoder, FACT-DETR decoder with 10 queries, same heads); they differ only in backbone size (ViT-L vs ViT-g) and training data / schedule.
 
 Public initialisations are fetched from their original repos at pinned revisions:
 `facebook/vjepa2-vitl-fpc64-256`, `facebook/vjepa2-vitg-fpc64-256` (V-JEPA 2, MIT), `apiantonio/vjepa2.1-vit-large-384`
